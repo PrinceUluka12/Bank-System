@@ -1,7 +1,8 @@
 ﻿using BankSystem.CustomerInformation.Models;
+using BankSystem.CustomerInformation.Models.DTO;
 using BankSystem.CustomerInformation.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BankSystem.CustomerInformation.Controllers
 {
@@ -9,105 +10,155 @@ namespace BankSystem.CustomerInformation.Controllers
     [ApiController]
     public class CustomerAccountController : ControllerBase
     {
-        private readonly ICustomerInfoService _customerInfoService;
+
         private readonly IAccountInfoService _accountInfoService;
-        public CustomerAccountController(ICustomerInfoService customerInfoService, IAccountInfoService accountInfoService)
+        private ResponseDto _response;
+        public CustomerAccountController(IAccountInfoService accountInfoService)
         {
             _accountInfoService = accountInfoService;
-            _customerInfoService = customerInfoService;
+            _response = new ResponseDto();
         }
 
         [HttpPost("AddNewCustomer")]
-        public async Task<IActionResult> AddNewCustomer(AccountCreationDTO account) 
+        public async Task<ResponseDto> AddNewCustomer(AccountCreationDTO account)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest();
+                    _response.IsSuccess = false;
+                    _response.Message = "ERROR.....";
+                    return _response;
                 }
                 else
                 {
-                    bool response = await _customerInfoService.AddNewCustomer(account);
-                    return Ok(response);
-                } 
+                    bool response = await _accountInfoService.AddNewCustomer(account);
+                    _response.Result = response;
+                    return _response;
+                }
             }
             catch (Exception ex)
             {
-
-                return BadRequest(ex.Message);
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+                return _response;
             }
-            
+
         }
 
-        [HttpGet("GetCustomers")]
-        public async Task<IActionResult> GetCustomers()
+        //[HttpGet("GetCustomers")]
+        //public async Task<IActionResult> GetCustomers()
+        //{
+        //    try
+        //    {
+        //        var data = await _accountInfoService.GetAll();
+        //        return Ok(data);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
+
+        [HttpGet("GetCustomerById/{customerId:int}")]
+        public async Task<ResponseDto> GetCustomerById(int customerId)
         {
             try
             {
-                var data =await _customerInfoService.GetAll();
-                return Ok(data);
+                var data = await _accountInfoService.GetCustomerById(customerId);
+                _response.Result = data;
+                return _response;
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+                return _response;
             }
         }
 
-        [HttpGet("GetCustomerById/{customerId}")]
-        public async Task<IActionResult> GetCustomerById(int CustomerId)
+        [HttpGet("GetCustomerAccountInfoByCustomerId/{customerId:int}")]
+        public async Task<ResponseDto> GetCustomerAccountInfoByCustomerId(int customerId)
         {
             try
             {
-                var data = await _customerInfoService.GetCustomerById(CustomerId);
-                return Ok(data);
+                var data = await _accountInfoService.GetCustomerAccountInfoByCustomerId(customerId);
+                _response.Result = data;
+                return _response;
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+                return _response;
             }
         }
 
-        [HttpGet("GetCustomerAccountInfoByCustomerId/{customerId}")]
-        public async Task<IActionResult> GetCustomerAccountInfoByCustomerId(int CustomerId)
+        [HttpGet("GetCustomerAccountInfoByAccountNumber/{AccountNumber:int}")]
+        public async Task<ResponseDto> GetCustomerAccountInfoByAccountNumber(int AccountNumber)
         {
             try
             {
-                var data = await _accountInfoService.GetCustomerAccountInfoByCustomerId(CustomerId);
-                return Ok(data);
+                var data = await _accountInfoService.GetCustomerAccountInfoByAccountNumber(AccountNumber);
+                _response.Result = data;
+                return _response;
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+                return _response;
             }
         }
 
         [HttpPut("UpdateCustomerInfo")]
-        public async Task<IActionResult> UpdateCustomerInfo(CustomerInfos info)
+        public async Task<ResponseDto> UpdateCustomerInfo(CustomerInfos info)
         {
             try
             {
-                var data = await _customerInfoService.UpdateCustomer(info);
-                return Ok(data);
+                var data = await _accountInfoService.UpdateCustomer(info);
+                _response.Result = data;
+                return _response;
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+                return _response;
             }
         }
 
-        [HttpDelete("DeleteCustomerInfo/{CustomerId}")]
-        public async Task<IActionResult> DeleteCustomerInfo(int CustomerId)
+        [HttpDelete("DeleteCustomerInfo/{CustomerId:int}")]
+        public async Task<ResponseDto> DeleteCustomerInfo(int CustomerId)
         {
             try
             {
-                var data = await _customerInfoService.DeleteCustomer(CustomerId);
-                return Ok(data);
+                var data = await _accountInfoService.DeleteCustomer(CustomerId);
+                _response.Result = data;
+                return _response;
             }
             catch (Exception ex)
             {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+                return _response;
+            }
+        }
 
-                return BadRequest(ex.Message);
+        [HttpPost("UpdateAccountBalance")]
+        public async Task<ResponseDto> UpdateAccountBalance([FromBody] DepositDTO model)
+        {
+            try
+            {
+                var data = await _accountInfoService.UpdateAccountBalance(model.AccountNumber, model.Balance);
+                _response.Result = data;
+                return _response;
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+                return _response;
             }
         }
     }

@@ -4,16 +4,19 @@ using System.Text.Json;
 using System.Text;
 using BankSystem.NotificationService.Models;
 using BankSystem.NotificationService.Services;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 public class Program
 {
     static void Main()
     {
+         
         Console.WriteLine("Welcome to the Notification Service");
         //Rabbit Mq Connection parameters
         var factory = new ConnectionFactory()
         {
-            HostName = "localhost",
+            HostName = "http://localhost:15672",
             UserName = "BankService",
             Password = "12345678",
             VirtualHost = "/"
@@ -55,4 +58,6 @@ public class Program
 
         Console.ReadKey();
     }
+
+   
 }

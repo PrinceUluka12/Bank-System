@@ -17,7 +17,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IAccountInfoService, AccountInfoService>();
-builder.Services.AddScoped<ICustomerInfoService, CustomerInfoService>();
 builder.Services.AddScoped<IEmailService,EmailService>();
 builder.Services.AddScoped<IPublishMessages, PublishMessages>();
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -61,7 +60,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+DataBaseManagement.MigrationIntilization(app);
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

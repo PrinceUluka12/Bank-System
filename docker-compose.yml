@@ -1,5 +1,20 @@
 version: '3.8'
 services:
+  mssql-server:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    command: 
+      - /bin/bash
+      - -c
+      - "/opt/mssql/bin/sqlservr -T 7806"
+    environment : 
+        ACCEPT_EULA: Y
+        SA_PASSWORD : "Docker2021"
+        MSSQL_PID: Express
+        PATH : /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+        MSSQL_RPC_PORT: 135
+        CONFIG_EDGE_BUILD:
+    ports:
+        - "1433:1433"
   rabbitmq:
     container_name: "rabbitmq"
     image: rabbitmq:3.8-management-alpine
@@ -11,3 +26,17 @@ services:
       - '5672:5672'
       # web interface
       - '15672:15672'
+    
+  customer-information-app:
+    build : ./BankSystem.CustomerInformation
+    ports:
+        - "8090:80"
+  notification-service:
+    build: ./BankSystem.NotificationService
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "8070:80"
+    
+     

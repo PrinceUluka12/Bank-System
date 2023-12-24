@@ -9,7 +9,7 @@ namespace BankSystem.CustomerInformation.Models
         public int AccountNumber { get; set; }
         public int CustomerID { get; set; }
         public string AccountType { get; set; }
-        public decimal Balance { get; set; }
+        public double Balance { get; set; }
         public DateTime? OpenDate { get; set; }
         [ForeignKey("CustomerID")]
         public CustomerInfos Customer { get; set; }
