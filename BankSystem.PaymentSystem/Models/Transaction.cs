@@ -8,13 +8,13 @@ namespace BankSystem.PaymentSystem.Models
         [Key]
         public int TransactionId { get; set; }
         public int SenderAccountNumber { get; set; }
+        public string SenderFirstName { get; set; }
+        public string SenderLastName { get; set; }
+        public string ReceiverFirstName { get; set; }
+        public string ReceiverLastName { get; set; }
         public int ReceiverAccountNumber { get; set; }
         public double Amount { get; set; }
         public DateTime Timestamp { get; set; }
         public string Description { get; set; }
-        [ForeignKey(nameof(SenderAccountNumber))]
-        public AccountInfo SenderAccount { get; set; }
-        [ForeignKey(nameof(ReceiverAccountNumber))]
-        public AccountInfo ReceiverAccount { get; set; }
     }
 }

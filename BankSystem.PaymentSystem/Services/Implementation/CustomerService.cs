@@ -22,7 +22,15 @@ namespace BankSystem.PaymentSystem.Services.Implementation
             var resp = JsonConvert.DeserializeObject<ResponseDto>(apiContent);
             if (resp.IsSuccess)
             {
-                return JsonConvert.DeserializeObject<CustomerInfo>(Convert.ToString(resp.Result));
+                var data =  JsonConvert.DeserializeObject<dynamic>(Convert.ToString(resp.Result));
+                CustomerInfo customerInfo = new CustomerInfo()
+                {
+                    CustomerId = data.CustomerId,
+                    Email = data.Email,
+                    FirstName = data.FirstName,
+                    LastName = data.LastName
+                };
+                return customerInfo;
             }
             return new CustomerInfo();
         }

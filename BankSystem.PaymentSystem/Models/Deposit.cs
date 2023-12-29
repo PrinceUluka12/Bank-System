@@ -14,7 +14,5 @@ namespace BankSystem.PaymentSystem.Models
         public string LastName { get; set; }
         public double Amount { get; set; }
         public DateTime TimeStamp { get; set; }
-        [ForeignKey("AccountNumber")]
-        public AccountInfo AccountDetails { get; set; }
     }
 }
